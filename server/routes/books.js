@@ -1,9 +1,9 @@
+// routes/bookRoutes.js
 const express = require('express');
+const { getBooks, getGenres } = require('../controllers/books');
 const router = express.Router();
-const bookController = require('../controllers/bookController');
-const auth = require('../middleware/auth');
 
-router.get('/search', auth, bookController.searchBooks);
-router.get('/:id', auth, bookController.getBookById);
+router.get('/genres', getGenres);
+router.get('/', getBooks);
 
 module.exports = router;
