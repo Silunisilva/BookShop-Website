@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
+import loginImage from '../assets/images/login-image.jpg';
 
 const Login = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -57,50 +58,62 @@ const Login = ({ onLogin }) => {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h2>Login to BookShop</h2>
-        {error && <div className="error-message">{error}</div>}
+      <div className="auth-wrapper">
+        <div className="auth-image-section">
+          <img 
+            src={loginImage}
+            alt="Welcome to your reading journey"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
         
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-            />
+        <div className="auth-form-section">
+          <div className="auth-box">
+            <h2>Login to BookShop</h2>
+            {error && <div className="error-message">{error}</div>}
+            
+            <form onSubmit={handleSubmit} className="auth-form">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your password"
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="auth-button"
+                disabled={loading}
+              >
+                {loading ? 'Logging in...' : 'Login'}
+              </button>
+            </form>
+
+            <p className="auth-switch">
+              Don't have an account?{' '}
+              <Link to="/register">Register here</Link>
+            </p>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="auth-button"
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-
-        <p className="auth-switch">
-          Don't have an account?{' '}
-          <Link to="/register">Register here</Link>
-        </p>
+        </div>
       </div>
     </div>
   );

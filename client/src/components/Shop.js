@@ -96,8 +96,10 @@ const Shop = () => {
 
   return (
     <div className="shop-container">
+      <div className="shop-header">
+        <h1>Start Building Your Dream Book Shelf Today!</h1>
+      </div>
       <div className="filters-section">
-        <h1>Book Shop</h1>
         
         <div className="filter-controls">
           <div className="filter-group">

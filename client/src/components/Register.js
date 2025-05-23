@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
+import registerImage from '../assets/images/register-image.jpg';
 
 const Register = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -76,78 +77,88 @@ const Register = ({ onLogin }) => {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h2>Create an Account</h2>
-        {error && <div className="error-message">{error}</div>}
+      <div className="auth-wrapper">
+        <div className="auth-image-section">
+          <img 
+            src={registerImage}
+            alt="Join our reading community"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
         
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="name">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              placeholder="Enter your full name"
-            />
+        <div className="auth-form-section">
+          <div className="auth-box">
+            <h2>Create an Account</h2>
+            {error && <div className="error-message">{error}</div>}
+            
+            <form onSubmit={handleSubmit} className="auth-form">
+              <div className="form-group">
+                <label htmlFor="name">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Create a password"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  placeholder="Confirm your password"
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="auth-button"
+                disabled={loading}
+              >
+                {loading ? 'Creating Account...' : 'Register'}
+              </button>
+            </form>
+
+            <p className="auth-switch">
+              Already have an account?{' '}
+              <Link to="/login">Login here</Link>
+            </p>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-              minLength="6"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              placeholder="Confirm your password"
-              minLength="6"
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="auth-button"
-            disabled={loading}
-          >
-            {loading ? 'Creating Account...' : 'Register'}
-          </button>
-        </form>
-
-        <p className="auth-switch">
-          Already have an account?{' '}
-          <Link to="/login">Login here</Link>
-        </p>
+        </div>
       </div>
     </div>
   );

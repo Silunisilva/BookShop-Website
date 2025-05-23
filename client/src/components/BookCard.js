@@ -1,38 +1,22 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './BookCard.css';
 
 const BookCard = ({ book, isAuthenticated }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Generate a random price between 10 and 50
-  const price = book.price || Math.floor(Math.random() * 41) + 10;
-
-  const handleAddToCart = async () => {
-    setLoading(true);
-    setError('');
-
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
     if (!isAuthenticated) {
-      setError('Please log in to add items to cart');
-      setTimeout(() => navigate('/login'), 1500);
-      setLoading(false);
       return;
     }
 
+    setIsAdding(true);
+    setError(null);
+
     try {
       const token = localStorage.getItem('token');
-      console.log('Adding to cart:', {
-        bookId: book.key,
-        title: book.title,
-        author: book.author_name?.[0] || 'Unknown Author',
-        coverId: book.cover_i || book.cover_id,
-        price: price,
-        token: token ? 'present' : 'missing'
-      });
-
       const response = await fetch('http://localhost:5000/api/cart/add', {
         method: 'POST',
         headers: {
@@ -42,71 +26,96 @@ const BookCard = ({ book, isAuthenticated }) => {
         body: JSON.stringify({
           bookId: book.key,
           title: book.title,
-          author: book.author_name?.[0] || 'Unknown Author',
+          author: book.author_name ? book.author_name.join(', ') : 'Unknown Author',
           coverId: book.cover_i || book.cover_id,
-          price: price
+          price: (Math.random() * 20 + 10).toFixed(2) // Using the same random price as displayed
         })
       });
 
       const data = await response.json();
-      console.log('Cart response:', {
-        status: response.status,
-        ok: response.ok,
-        data: data
-      });
-
-      if (response.status === 401) {
-        setError('Your session has expired. Please log in again.');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setTimeout(() => navigate('/login'), 1500);
-        return;
-      }
-
+      
       if (!response.ok) {
         throw new Error(data.error || 'Failed to add to cart');
       }
 
       // Show success message
-      alert('Book added to cart!');
-      
-      // Always navigate to cart page after successful addition
-      navigate('/cart');
-      
+      alert('Book added to cart successfully!');
     } catch (err) {
       console.error('Add to cart error:', err);
       setError(err.message);
+      alert('Failed to add book to cart. Please try again.');
     } finally {
-      setLoading(false);
+      setIsAdding(false);
     }
+  };
+
+  // Function to get the correct cover URL
+  const getCoverUrl = (book) => {
+    // Try different cover ID properties
+    const coverId = book.cover_i || book.cover_id || book.cover;
+    
+    if (coverId) {
+      return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
+    }
+    
+    // If no cover ID, try using the work ID
+    if (book.key) {
+      const workId = book.key.split('/').pop();
+      return `https://covers.openlibrary.org/b/olid/${workId}-M.jpg`;
+    }
+    
+    // Fallback to placeholder
+    return '/book-placeholder.jpg';
   };
 
   return (
     <div className="book-card">
       {error && <div className="error-message">{error}</div>}
       <div className="book-cover">
-        {(book.cover_i || book.cover_id) ? (
-          <img 
-            src={`https://covers.openlibrary.org/b/id/${book.cover_i || book.cover_id}-M.jpg`} 
-            alt={book.title}
-          />
-        ) : (
-          <div className="no-cover">No Cover Available</div>
-        )}
+        <img 
+          src={getCoverUrl(book)} 
+          alt={book.title}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = '/book-placeholder.jpg';
+          }}
+        />
       </div>
       <div className="book-info">
-        <h3>{book.title}</h3>
-        <p className="author">
-          {book.author_name?.[0] || 'Unknown Author'}
+        <h3 className="book-title">{book.title}</h3>
+        <p className="book-author">
+          {book.author_name ? book.author_name.join(', ') : 'Unknown Author'}
         </p>
-        <p className="price">${price.toFixed(2)}</p>
-        <button 
-          className="add-to-cart-btn"
-          onClick={handleAddToCart}
-          disabled={loading}
-        >
-          {loading ? 'Adding...' : 'Add to Cart'}
-        </button>
+        <div className="book-price">
+          ${(Math.random() * 20 + 10).toFixed(2)}
+        </div>
+        <div className="book-actions">
+          {isAuthenticated ? (
+            <>
+              <button 
+                className="book-button add-to-cart"
+                onClick={handleAddToCart}
+                disabled={isAdding}
+              >
+                {isAdding ? 'Adding...' : 'Add to Cart'}
+              </button>
+              <Link 
+                to={`/book/${book.key.split('/').pop()}`}
+                className="book-button view-details"
+              >
+                View Details
+              </Link>
+            </>
+          ) : (
+            <Link 
+              to="/login"
+              className="book-button view-details"
+              style={{ flex: 1 }}
+            >
+              Login to Purchase
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import Shop from './components/Shop';
 import Cart from './components/Cart';
 import Orders from './components/Orders';
 import Profile from './components/Profile';
+import Footer from './components/Footer';
 import './App.css';
 
 function App() {
@@ -158,6 +159,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }

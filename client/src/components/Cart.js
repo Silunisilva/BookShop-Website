@@ -229,7 +229,9 @@ const Cart = () => {
 
   return (
     <div className="cart-container">
-      <h2>Your Cart</h2>
+      <div className="cart-header">
+        <h2>Sweet reads are on the way —One more step to magic!🐻</h2>
+      </div>
       {cart && cart.items && cart.items.length > 0 ? (
         <>
           <div className="cart-items">
